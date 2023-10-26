@@ -7,10 +7,6 @@ public class Painter : MonoBehaviour
     public GameObject lineObject;
     LineRenderer line;
 
-    public GameObject Red;
-    public GameObject Blue;
-    public GameObject Yellow;
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
@@ -20,6 +16,27 @@ public class Painter : MonoBehaviour
         if (Input.GetKey(KeyCode.Mouse0))
         {
             AddPoint();
+        }
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.gameObject.name.Equals("Blue"))
+                {
+                    CreateNewLine(Color.blue);
+                }
+                else if (hit.collider.gameObject.name.Equals("Red"))
+                {
+                    CreateNewLine(Color.red);
+                }
+                else if (hit.collider.gameObject.name.Equals("Yellow"))
+                {
+                    CreateNewLine(Color.yellow);
+                }
+            }
         }
     }
     void AddPoint()
@@ -31,22 +48,14 @@ public class Painter : MonoBehaviour
 
         line.SetPosition(line.positionCount - 1, worldPos);
     }
-    void OnMouseDown()
+    void CreateNewLine(Color color)
     {
-        if (gameObject.tag == "Red")
-        {
-            line.startColor = Color.red;
-            line.endColor = Color.red;
-        }
-        if (gameObject.tag == "Blue")
-        {
-            line.startColor = Color.blue;
-            line.endColor = Color.blue;
-        }
-        if (gameObject.tag == "Yellow")
-        {
-            line.startColor = Color.yellow;
-            line.endColor = Color.yellow;
-        }
+        GameObject newLineObject = new GameObject("LineRenderer");
+        line = newLineObject.AddComponent<LineRenderer>();
+        line.material = new Material(Shader.Find("Sprites/Default"));
+        line.startColor = color;
+        line.endColor = color;
+        line.startWidth = 0.3f;
+        line.endWidth = 0.3f;
     }
 }
